@@ -17,8 +17,6 @@ sudo apt install -y apache2 \
                  php-mysql \
                  php-xml \
                  php-zip
-sudo apt update -y
-sudo apt install mysql-server -y
 
 sudo systemctl start apache2
 sudo systemctl enable apache2
@@ -33,22 +31,22 @@ sudo chmod 755 /var/www/hungpham.link/
 touch /var/www/hungpham.link/index.html
 cd /etc/apache2/
 
-touch sites-available/hungpham_link.conf
+touch sites-available/hungpham.link.conf
 
-sudo tee /etc/apache2/sites-available/hungpham_link.conf > /dev/null <<EOF
+sudo tee /etc/apache2/sites-available/hungpham.link.conf > /dev/null <<EOF
 <VirtualHost *:80>
     ServerName hungpham.link
     ServerAlias www.hungpham.link
     DocumentRoot /var/www/hungpham.link
 
     ServerAdmin webmaster@hungpham.link
-    ErrorLog /var/log/apache2/hungpham.link_error.log
-    CustomLog /var/log/apache2/hungpham.link_access.log combined
+    ErrorLog /var/log/apache2/hungpham_link_error.log
+    CustomLog /var/log/apache2/hungpham_link_access.log combined
 </VirtualHost>
 EOF
 
-sudo a2ensite hungpham_link.conf
-
+sudo a2ensite hungpham.link
+sudo a2dissite 000-default
 sudo systemctl reload apache2
 
 

@@ -81,7 +81,7 @@ module "autoscaling" {
   user_data = base64encode(templatefile("bash_script.sh", {
     db_password = local.rds_password
     db_user     = "admin"
-    db_endpoint = "name.abc123def456g.us-east-1.rds.amazonaws.com"
+    db_endpoint = ""
   }))
 
 
