@@ -1,6 +1,8 @@
-MYSQL_USER="{db_user}"
-MYSQL_PASSWORD="{db_password}"
-MYSQL_HOST="{db_endpoint}"
+#!/bin/bash
+MYSQL_USER=${db_username}
+MYSQL_DB_NAME=${db_name}
+MYSQL_PASSWORD=${db_password}
+MYSQL_ENDPOINT=${db_endpoint}
 
 sudo apt update -y
 sudo apt install -y apache2 \
@@ -49,15 +51,6 @@ sudo a2ensite hungpham.link
 sudo a2dissite 000-default
 sudo systemctl reload apache2
 
-
-mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h"$MYSQL_HOST" <<EOF
-CREATE DATABASE wordpress;
-CREATE USER 'wordpress'@'localhost' IDENTIFIED BY 'Pass123.';
-GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'localhost';
-FLUSH PRIVILEGES;
-exit
-EOF
-
 cd /tmp/
 wget https://wordpress.org/latest.tar.gz
 tar -xzvf latest.tar.gz
@@ -65,3 +58,10 @@ ls wordpress/
 rm -rf /var/www/hungpham.link/*
 mv wordpress/* /var/www/hungpham.link/
 chown -R www-data.www-data /var/www/hungpham.link/
+
+cd /var/www/hungpham.link
+cp wp-config-sample.php wp-config.php
+sed -i "s/database_name_here/$MYSQL_DB_NAME/g" wp-config.php
+sed -i "s/username_here/$MYSQL_USER/g" wp-config.php
+sed -i "s/password_here/$MYSQL_PASSWORD/g" wp-config.php
+sed -i "s/localhost/$MYSQL_ENDPOINT/g" wp-config.php

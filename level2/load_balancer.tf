@@ -2,14 +2,14 @@ data "aws_route53_zone" "main" {
   name = "hungpham.link"
 }
 
-module "acm" {
-  source = "terraform-aws-modules/acm/aws"
+# module "acm" {
+#   source = "terraform-aws-modules/acm/aws"
 
-  domain_name = "www.hungpham.link"
-  zone_id     = data.aws_route53_zone.main.id
+#   domain_name = "www.hungpham.link"
+#   zone_id     = data.aws_route53_zone.main.id
 
-  wait_for_validation = true
-}
+#   wait_for_validation = true
+# }
 
 module "external_sg" {
   source = "terraform-aws-modules/security-group/aws"
@@ -18,13 +18,13 @@ module "external_sg" {
   vpc_id = data.terraform_remote_state.level1.outputs.vpc_id
 
   ingress_with_cidr_blocks = [
-    {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      description = "https to ELB"
-      cidr_blocks = "0.0.0.0/0"
-    },
+    # {
+    #   from_port   = 443
+    #   to_port     = 443
+    #   protocol    = "tcp"
+    #   description = "https to ELB"
+    #   cidr_blocks = "0.0.0.0/0"
+    # },
     {
       from_port   = 80
       to_port     = 80
@@ -76,12 +76,12 @@ module "elb" {
     }
   ]
 
-  https_listeners = [
+  http_tcp_listeners = [
     {
-      port               = 443
-      protocol           = "HTTPS"
-       certificate_arn    = module.acm.acm_certificate_arn
-      action_type        = "forward"
+      port     = 80
+      protocol = "HTTP"
+      # certificate_arn    = module.acm.acm_certificate_arn
+      type               = "forward"
       target_group_index = 0
     }
   ]

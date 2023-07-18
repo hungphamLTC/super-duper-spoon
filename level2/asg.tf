@@ -55,6 +55,15 @@ data "aws_ami" "ubuntu" {
   }
 }
 
+data "template_file" "user_data" {
+  template = file("${path.module}/bash_script.sh")
+  vars = {
+    db_username = local.db_username
+    db_name     = local.db_name
+    db_password = local.rds_password
+    db_endpoint = module.rds.db_instance_endpoint
+  }
+}
 
 module "autoscaling" {
   source = "terraform-aws-modules/autoscaling/aws"
@@ -78,11 +87,7 @@ module "autoscaling" {
   instance_type   = var.instance_type
   key_name        = var.key_name
   security_groups = [module.private_sg.security_group_id]
-  user_data = base64encode(templatefile("bash_script.sh", {
-    db_password = local.rds_password
-    db_user     = "admin"
-    db_endpoint = ""
-  }))
+  user_data       = base64encode(data.template_file.user_data.rendered)
 
 
   create_iam_instance_profile = true
