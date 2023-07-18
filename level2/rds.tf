@@ -38,7 +38,7 @@ module "rds" {
   db_name                     = local.db_name
   username                    = local.db_username
   password                    = local.rds_password
-  manage_master_user_password = false
+  create_random_password = false
 
   skip_final_snapshot = true
   multi_az            = false

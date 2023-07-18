@@ -2,9 +2,10 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
+      version = "~>4.16"
     }
   }
-
+  required_version = ">= 1.2.0"
   backend "s3" {
     bucket         = "terraform-remote-state-40h2b"
     key            = "level2.tfstate"
