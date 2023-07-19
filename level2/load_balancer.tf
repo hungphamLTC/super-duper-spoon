@@ -24,6 +24,13 @@ module "external_sg" {
       protocol    = "tcp"
       description = "https to ELB"
       cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      description = "http to ELB"
+      cidr_blocks = "0.0.0.0/0"
     }
   ]
 
@@ -76,6 +83,15 @@ module "elb" {
       port               = 443
       protocol           = "HTTPS"
       certificate_arn    = module.acm.acm_certificate_arn
+      action_type        = "forward"
+      target_group_index = 0
+    }
+  ]
+
+  http_tcp_listeners = [
+    {
+      port               = 80
+      protocol           = "HTTP"
       action_type        = "forward"
       target_group_index = 0
     }
