@@ -28,17 +28,17 @@ module "rds_sg" {
 module "rds" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier             = var.area_code
-  allocated_storage      = 20
-  storage_type           = "gp2"
-  engine                 = "mysql"
-  engine_version         = "5.7"
-  instance_class         = "db.t3.micro"
-  port                   = "3306"
-  db_name                = local.db_name
-  username               = local.db_username
-  password               = local.rds_password
-  create_random_password = false
+  identifier                  = var.area_code
+  allocated_storage           = 20
+  storage_type                = "gp2"
+  engine                      = "mysql"
+  engine_version              = "5.7"
+  instance_class              = "db.t3.micro"
+  port                        = "3306"
+  db_name                     = local.db_name
+  username                    = local.db_username
+  password                    = local.rds_password
+  manage_master_user_password = false
 
   skip_final_snapshot = true
   multi_az            = false
