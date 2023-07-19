@@ -6,7 +6,7 @@ module "acm" {
   source = "terraform-aws-modules/acm/aws"
 
   domain_name = "www.hungpham.link"
-  zone_id     = data.aws_route53_zone.main.id
+  zone_id     = data.aws_route53_zone.main.zone_id
 
   wait_for_validation = true
 }
@@ -25,13 +25,6 @@ module "external_sg" {
       description = "https to ELB"
       cidr_blocks = "0.0.0.0/0"
     }
-    # {
-    #   from_port   = 80
-    #   to_port     = 80
-    #   protocol    = "tcp"
-    #   description = "http to ELB"
-    #   cidr_blocks = "0.0.0.0/0"
-    # }
   ]
 
   egress_with_cidr_blocks = [
@@ -49,7 +42,9 @@ module "elb" {
   source = "terraform-aws-modules/alb/aws"
 
   name               = var.area_code
+
   load_balancer_type = "application"
+  
   vpc_id             = data.terraform_remote_state.level1.outputs.vpc_id
   internal           = false
   subnets            = data.terraform_remote_state.level1.outputs.public_subnet_id
@@ -75,16 +70,6 @@ module "elb" {
       }
     }
   ]
-
-  # http_tcp_listeners = [
-  #   {
-  #     port               = 80
-  #     protocol           = "HTTP"
-  #     certificate_arn    = module.acm.acm_certificate_arn
-  #     type               = "forward"
-  #     target_group_index = 0
-  #   }
-  # ]
 
   https_listeners = [
     {

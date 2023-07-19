@@ -14,16 +14,6 @@ module "private_sg" {
 
   number_of_computed_ingress_with_source_security_group_id = 1
 
-  #   ingress_with_cidr_blocks = [
-  #     {
-  #         from_port = 22
-  #         to_port =22
-  #         protocol = "tcp"
-  #         description = "SSH to ec2 instance"
-  #         cidr_blocks = "0.0.0.0/0"
-  #     }
-  #   ]
-
   egress_with_cidr_blocks = [
     {
       from_port   = 0
