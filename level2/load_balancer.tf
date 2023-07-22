@@ -48,14 +48,14 @@ module "external_sg" {
 module "elb" {
   source = "terraform-aws-modules/alb/aws"
 
-  name               = var.area_code
+  name = var.area_code
 
   load_balancer_type = "application"
-  
-  vpc_id             = data.terraform_remote_state.level1.outputs.vpc_id
-  internal           = false
-  subnets            = data.terraform_remote_state.level1.outputs.public_subnet_id
-  security_groups    = [module.external_sg.security_group_id]
+
+  vpc_id          = data.terraform_remote_state.level1.outputs.vpc_id
+  internal        = false
+  subnets         = data.terraform_remote_state.level1.outputs.public_subnet_id
+  security_groups = [module.external_sg.security_group_id]
 
   target_groups = [
     {
@@ -90,10 +90,14 @@ module "elb" {
 
   http_tcp_listeners = [
     {
-      port               = 80
-      protocol           = "HTTP"
-      action_type        = "forward"
-      target_group_index = 0
+      port        = 80
+      protocol    = "HTTP"
+      action_type = "redirect"
+      redirect = {
+        port        = "443"
+        protocol    = "HTTPS"
+        status_code = "HTTP_301"
+      }
     }
   ]
 }
@@ -109,6 +113,15 @@ module "dns" {
       type    = "CNAME"
       records = [module.elb.lb_dns_name]
       ttl     = 3600
+    },
+    {
+      name = ""
+      type = "A"
+      alias = {
+        name                   = module.elb.lb_dns_name
+        zone_id                = module.elb.lb_zone_id
+        evaluate_target_health = true
+      }
     }
   ]
 }

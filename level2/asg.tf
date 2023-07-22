@@ -51,8 +51,8 @@ module "autoscaling" {
 
   name                      = var.area_code
   min_size                  = 1
-  max_size                  = 2
-  desired_capacity          = 2
+  max_size                  = 1
+  desired_capacity          = 1
   health_check_grace_period = 400
   health_check_type         = "EC2"
   vpc_zone_identifier       = data.terraform_remote_state.level1.outputs.private_subnet_id
@@ -68,7 +68,7 @@ module "autoscaling" {
   instance_type   = var.instance_type
   key_name        = var.key_name
   security_groups = [module.private_sg.security_group_id]
-  user_data       = base64encode(templatefile("${path.module}/bash_script.sh", {
+  user_data = base64encode(templatefile("${path.module}/bash_script.sh", {
     db_username = local.db_username
     db_name     = local.db_name
     db_password = local.rds_password
